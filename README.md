@@ -27,5 +27,7 @@ python packet_sniffer.py
 
 
 1.-Ingresa el número deseado de paquetes y, opcionalmente, el número de paquete específico.
+
 2.-Haz clic en "Iniciar Sniffer" para comenzar la captura.
+
 3.-Observa la información detallada de los paquetes capturados en la interfaz.
