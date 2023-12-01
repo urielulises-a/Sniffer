@@ -23,8 +23,6 @@ Este es un simple paquete sniffer implementado en Python con interfaz gráfica u
    git clone https://github.com/urielulises-a/Sniffer.git
    pip install scapy
 
-python packet_sniffer.py
-
 
 1.-Ingresa el número deseado de paquetes y, opcionalmente, el número de paquete específico.
 
