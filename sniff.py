@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 from scapy.all import sniff, IP, TCP, UDP, Ether
+import socket
 
 class PacketSniffer:
     def __init__(self, root):
@@ -52,37 +53,56 @@ class PacketSniffer:
         def packet_callback(packet):
             nonlocal all_packets, all_ips
 
-            # Mostrar información detallada en la interfaz principal
-            packet_info = ""
-            if packet.haslayer(IP):
-                packet_info += f"\n\n********Capa de Red********\n\n{packet[IP].show(dump=True)}"
-                all_ips.add(packet[IP].src)
-                all_ips.add(packet[IP].dst)
-            if packet.haslayer(TCP): packet_info += f"\n\n********Capa de Transporte********\n\n{packet[TCP].show(dump=True)}\n\n"
-            if packet.haslayer(UDP): packet_info += f"\n\n********Capa de Transporte********\n\n{packet[UDP].show(dump=True)}\n\n"
-            if packet.haslayer(Ether): packet_info += f"\n\n********Capa de Enlace de Datos********\n\n{packet[Ether].show(dump=True)}\n\n"
+            try:
+                # Mostrar información detallada en la interfaz principal
+                packet_info = ""
+                if packet.haslayer(IP):
+                    packet_info += f"\n\n********Capa de Red********\n\n{packet[IP].show(dump=True)}"
+                    all_ips.add(packet[IP].src)
+                    all_ips.add(packet[IP].dst)
 
-            self.result_text.insert(tk.END, packet_info)
-            self.result_text.see(tk.END)
+                    # Obtener y mostrar el nombre de host asociado a la dirección IP
+                    try:
+                        src_host = socket.gethostbyaddr(packet[IP].src)
+                        dst_host = socket.gethostbyaddr(packet[IP].dst)
+                        packet_info += f"\n\n********Nombre de Host********\n\nSource: {src_host[0]}, Destination: {dst_host[0]}\n\n"
+                    except socket.herror:
+                        pass
 
-            # Almacenar información para secciones adicionales
-            all_packets.append(packet.summary())
+                if packet.haslayer(TCP): packet_info += f"\n\n********Capa de Transporte********\n\n{packet[TCP].show(dump=True)}\n\n"
+                if packet.haslayer(UDP): packet_info += f"\n\n********Capa de Transporte********\n\n{packet[UDP].show(dump=True)}\n\n"
+                if packet.haslayer(Ether): packet_info += f"\n\n********Capa de Enlace de Datos********\n\n{packet[Ether].show(dump=True)}\n\n"
 
-        packets = sniff(count=packet_count)
+                self.result_text.insert(tk.END, packet_info)
+                self.result_text.see(tk.END)
+
+                # Almacenar información para secciones adicionales
+                all_packets.append(packet.summary())
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al procesar el paquete: {e}")
+
+        try:
+            packets = sniff(count=packet_count)
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al iniciar el sniffer: {e}")
+            return
 
         for i, packet in enumerate(packets, start=1):
-            packet_callback(packet)
+            try:
+                packet_callback(packet)
 
-            # Mostrar el paquete específico en la sección correspondiente
-            if i == specific_packet:
-                specific_packet_info = f"{packet.summary()}\n\n"
-                if packet.haslayer(IP): specific_packet_info += f"\n\n********Capa de Red********\n\n{packet[IP].show(dump=True)}"
-                if packet.haslayer(TCP): specific_packet_info += f"\n\n********Capa de Transporte********\n\n{packet[TCP].show(dump=True)}\n\n"
-                if packet.haslayer(UDP): specific_packet_info += f"\n\n********Capa de Transporte********\n\n{packet[UDP].show(dump=True)}\n\n"
-                if packet.haslayer(Ether): specific_packet_info += f"\n\n********Capa de Enlace de Datos********\n\n{packet[Ether].show(dump=True)}\n\n"
-                
-                self.specific_packet_text.insert(tk.END, specific_packet_info)
-                self.specific_packet_text.see(tk.END)
+                # Mostrar el paquete específico en la sección correspondiente
+                if i == specific_packet:
+                    specific_packet_info = f"{packet.summary()}\n\n"
+                    if packet.haslayer(IP): specific_packet_info += f"\n\n********Capa de Red********\n\n{packet[IP].show(dump=True)}"
+                    if packet.haslayer(TCP): specific_packet_info += f"\n\n********Capa de Transporte********\n\n{packet[TCP].show(dump=True)}\n\n"
+                    if packet.haslayer(UDP): specific_packet_info += f"\n\n********Capa de Transporte********\n\n{packet[UDP].show(dump=True)}\n\n"
+                    if packet.haslayer(Ether): specific_packet_info += f"\n\n********Capa de Enlace de Datos********\n\n{packet[Ether].show(dump=True)}\n\n"
+
+                    self.specific_packet_text.insert(tk.END, specific_packet_info)
+                    self.specific_packet_text.see(tk.END)
+            except Exception as e:
+                messagebox.showerror("Error", f"Error al procesar el paquete {i}: {e}")
 
         # Mostrar todos los paquetes en la sección correspondiente
         self.all_ips_text.insert(tk.END, "\n".join(all_ips))
