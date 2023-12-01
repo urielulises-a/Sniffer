@@ -17,15 +17,11 @@ Este es un simple paquete sniffer implementado en Python con interfaz gráfica u
 
 ## Instalación
 
-1. Clona el repositorio:
+1. Clona el repositorio e instala depedencias:
 
    ```bash
    git clone https://github.com/TU_USUARIO/Packet-Sniffer.git
-Instala las dependencias:
-
-pip install scapy
-
-Ejecuta la aplicación:
+   pip install scapy
 
 python packet_sniffer.py
 
