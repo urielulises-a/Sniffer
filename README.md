@@ -1,31 +1,24 @@
 # Sniffer
 # Packet Sniffer
 
-Este es un simple paquete sniffer implementado en Python con interfaz gráfica usando Tkinter y la biblioteca Scapy para capturar y analizar paquetes de red.
+This is a simple packet sniffer implemented in Python with a graphical interface using Tkinter and the Scapy library to capture and analyze network packets.
 
-## Características
+## Features
 
-- Captura y muestra información detallada sobre paquetes de red.
-- Permite especificar el número de paquetes a capturar y muestra información específica sobre un paquete seleccionado.
-- Muestra todas las direcciones IP capturadas, incluidos los nombres de host asociados cuando es posible.
+- Captures and displays detailed information about network packets.
+- Allows specifying the number of packets to capture and displays specific information about a selected packet.
+- Shows all captured IP addresses, including associated hostnames when possible.
 
-## Requisitos
+## Requirements
 
 - Python 3.x
 - Scapy
-- Tkinter (generalmente incluido con la instalación de Python)
+- Tkinter (usually included with the Python installation)
 
-## Instalación
+## Installation
 
-1. Clona el repositorio e instala depedencias:
+1. Clone the repository and install dependencies:
 
    ```bash
    git clone https://github.com/urielulises-a/Sniffer.git
    pip install scapy
-
-
-1.-Ingresa el número deseado de paquetes y, opcionalmente, el número de paquete específico.
-
-2.-Haz clic en "Iniciar Sniffer" para comenzar la captura.
-
-3.-Observa la información detallada de los paquetes capturados en la interfaz.
